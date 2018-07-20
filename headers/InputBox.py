@@ -23,9 +23,10 @@ class InputBox:
             self.color = self.COLOR_ACTIVE if self.active else self.COLOR_INACTIVE
         if event.type == pygame.KEYDOWN:
             if self.active:
-                if event.key == pygame.K_RETURN:
+                if(event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER):
                     # print(self.text)
-                    self.text = ''
+                    #self.text = ''
+                    pass
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:
@@ -38,6 +39,10 @@ class InputBox:
 
     def setActive(self, isActive):
         self.active = isActive
+
+    def setText(self, text):
+        self.text = text
+        self.txt_surface = self.FONT.render(self.text, True, self.color)
 
     def update(self):
         # Resize the box if the text is too long.
