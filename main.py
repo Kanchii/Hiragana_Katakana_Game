@@ -2,6 +2,7 @@ import pygame
 from headers.InputBox import InputBox
 from headers.funcoesGerais import *
 from headers.switcherButton import Switcher
+from headers.TextButton import TextButton
 
 BACKGROUND_COLOR = (255, 255, 255)
 (width, height) = (300, 200)
@@ -47,6 +48,20 @@ menu_font_selected = pygame.font.SysFont("impact", 28)
 menu_font_not_selected = pygame.font.SysFont("impact", 24)
 menu_color_selected = pygame.Color("deepskyblue4")
 menu_color_not_selected = pygame.Color("deepskyblue1")
+
+btn_Hiragana = TextButton(30, height / 2 - 40, 90, 25, pygame.Color(255, 255, 255), menu_font_not_selected, menu_color_not_selected, "Hiragana")
+btn_Katakana = TextButton(30, height / 2 - 5, 90, 25, pygame.Color(255, 255, 255), menu_font_not_selected, menu_color_not_selected, "Katakana")
+btn_Kanji = TextButton(30, height / 2 + 30, 90, 25, pygame.Color(255, 255, 255), menu_font_not_selected, menu_color_not_selected, "Kanji")
+btn_Sair = TextButton(150, height / 2 + 65, 90, 25, pygame.Color(255, 255, 255), menu_font_not_selected, menu_color_not_selected, "Sair")
+btn_Comecar = TextButton(30, height / 2 + 65, 90, 25, pygame.Color(255, 255, 255), menu_font_not_selected, menu_color_not_selected, "Começar")
+
+btn_Hiragana.setInteractive(menu_font_selected, menu_color_selected)
+btn_Katakana.setInteractive(menu_font_selected, menu_color_selected)
+btn_Kanji.setInteractive(menu_font_selected, menu_color_selected)
+btn_Sair.setInteractive(menu_font_selected, menu_color_selected)
+btn_Comecar.setInteractive(menu_font_selected, menu_color_selected)
+
+buttons = [btn_Hiragana, btn_Katakana, btn_Kanji, btn_Sair, btn_Comecar]
 
 cntAcertos = 0
 cntAtual = 1
@@ -133,59 +148,32 @@ while running:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
-                elif(event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER):
-                    if(menuSelect == 4):
-                        running = False
-                        continue
-                    inMenu = False
-                    all_images = loadImages(switchers[0].on, switchers[1].on, switchers[2].on)
-                    if(len(all_images) == 0):
-                        finished = True
+            for idx, button in enumerate(buttons):
+                ret = button.eventHandler(event)
+                if(ret == 1):
+                    if(idx <= 2):
+                        switchers[idx].switch(not switchers[idx].getState())
                     else:
-                        cntTotal = len(all_images)
-                        current_image = getRandomImage(all_images)
-                        image = pygame.image.load(current_image[0])
-                elif(event.key == pygame.K_UP):
-                    menuSelect = max(1, menuSelect - 1)
-                elif(event.key == pygame.K_DOWN):
-                    menuSelect = min(4, menuSelect + 1)
-                elif(event.key == pygame.K_RIGHT):
-                    if(menuSelect <= 3):
-                        switchers[menuSelect - 1].switch(False)
-                elif(event.key == pygame.K_LEFT):
-                    if(menuSelect <= 3):
-                        switchers[menuSelect - 1].switch(True)
+                        if(idx == 3):
+                            running = False
+                        else:
+                            inMenu = False
+                            all_images = loadImages(switchers[0].on, switchers[1].on, switchers[2].on)
+                            if(len(all_images) == 0):
+                                finished = True
+                            else:
+                                cntTotal = len(all_images)
+                                current_image = getRandomImage(all_images)
+                                image = pygame.image.load(current_image[0])
         screen.fill(BACKGROUND_COLOR)
         labelEst = myFontFinal.render("Menu '-'", 1, colorFinal)
         screen.blit(labelEst, (width / 2 - 50, height / 2 - 90))
 
-        if(menuSelect == 1):
-            label_hiragana = menu_font_selected.render("Hiragana", 1, menu_color_selected)
-        else:
-            label_hiragana = menu_font_not_selected.render("Hiragana", 1, menu_color_not_selected)
-
-        if(menuSelect == 2):
-            label_katakana = menu_font_selected.render("Katakana", 1, menu_color_selected)
-        else:
-            label_katakana = menu_font_not_selected.render("Katakana", 1, menu_color_not_selected)
-
-        if(menuSelect == 3):
-            label_kanji = menu_font_selected.render("Kanji", 1, menu_color_selected)
-        else:
-            label_kanji = menu_font_not_selected.render("Kanji", 1, menu_color_not_selected)
-
-        if(menuSelect == 4):
-            label_sair = menu_font_selected.render("Sair", 1, menu_color_selected)
-        else:
-            label_sair = menu_font_not_selected.render("Sair", 1, menu_color_not_selected)
+        for button in buttons:
+            button.draw(screen)
 
         for switch in switchers:
             switch.draw(screen)
-
-        screen.blit(label_hiragana, (40, height / 2 - 35))
-        screen.blit(label_katakana, (40, height / 2))
-        screen.blit(label_kanji, (40, height / 2 + 35))
-        screen.blit(label_sair, (40, height / 2 + 70))
 
     pygame.display.flip()
     clock.tick(FPS)

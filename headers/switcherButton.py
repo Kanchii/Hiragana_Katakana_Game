@@ -14,6 +14,9 @@ class Switcher:
     def switch(self, state):
         self.on = state
 
+    def getState(self):
+        return self.on
+
     def draw(self, screen):
         import pygame
 
