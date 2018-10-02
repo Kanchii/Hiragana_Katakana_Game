@@ -93,6 +93,8 @@ while running:
                             fading = 2
                 if(not finished):
                     input_box.handle_event(event)
+        elif(fading == 2):
+            pygame.time.wait(1000)
 
         if(not finished):
             if(fading != 0): cntFading += 1
@@ -128,7 +130,6 @@ while running:
                 screen.blit(wrongImage, (width / 2 + 30, height / 2 - 90))
                 correctAns = wrongAnsFont.render("Correct: " + current_image[1], 1, (0, 0, 0))
                 screen.blit(correctAns, (width - 80, height - 20))
-
         else:
             screen.fill(BACKGROUND_COLOR)
             labelEst = myFontFinal.render("Completed!", 1, colorFinal)
