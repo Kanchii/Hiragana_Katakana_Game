@@ -77,104 +77,106 @@ inMenu = True
 menuSelect = 1
 
 while running:
-    if(not inMenu):
-        if(fading == 0):
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        running = False
-                    elif not finished and (event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER):
-                        if(input_box.getText() == current_image[1]):
-                            fading = 1
-                            cntAcertos += 1
-                        else:
-                            fading = 2
-                if(not finished):
-                    input_box.handle_event(event)
-        elif(fading == 2):
-            pygame.time.wait(1000)
+	if(not inMenu):
+		if(fading == 0):
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					running = False
+				elif event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_ESCAPE:
+						running = False
+					elif not finished and (event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER):
+						if(input_box.getText() == current_image[1]):
+							fading = 1
+							cntAcertos += 1
+						else:
+							fading = 2
+				if(not finished):
+					input_box.handle_event(event)
+		elif(fading == 1):
+			pygame.time.wait(250)
+		elif(fading == 2):
+			pygame.time.wait(1000)
 
-        if(not finished):
-            if(fading != 0): cntFading += 1
-            if(cntFading == TIME_FADING * FPS):
-                fading = 0
-                cntFading = 0
+		if(not finished):
+			if(fading != 0): cntFading += 1
+			if(cntFading == TIME_FADING * FPS):
+				fading = 0
+				cntFading = 0
 
-                input_box.setText("")
+				input_box.setText("")
 
-                current_image = getRandomImage(all_images)
-                image = pygame.image.load(current_image[0])
+				current_image = getRandomImage(all_images)
+				image = pygame.image.load(current_image[0])
 
-                if(current_image[0][-3:] == 'jpg'):
-                    finished = True
-                    input_box.setActive(False)
-                    input_box.update()
-                    continue
+				if(current_image[0][-3:] == 'jpg'):
+					finished = True
+					input_box.setActive(False)
+					input_box.update()
+					continue
 
-                cntAtual += 1
+				cntAtual += 1
 
-            input_box.update()
-            screen.fill(BACKGROUND_COLOR)
-            input_box.draw(screen)
-            screen.blit(image, (width / 2 - 35, height / 2 - 70))
-            label = myFont.render(str(cntAtual) + "/" + str(cntTotal), 1, (0, 0, 0))
-            screen.blit(label, (width / 2 - 20, height / 2 + 70))
+			input_box.update()
+			screen.fill(BACKGROUND_COLOR)
+			input_box.draw(screen)
+			screen.blit(image, (width / 2 - 35, height / 2 - 70))
+			label = myFont.render(str(cntAtual) + "/" + str(cntTotal), 1, (0, 0, 0))
+			screen.blit(label, (width / 2 - 20, height / 2 + 70))
 
-            if(fading == CORRECT_ANS):
-                correctImage.set_alpha(round(255 - 255 * (cntFading / float(TIME_FADING * FPS))))
-                screen.blit(correctImage, (width / 2 + 30, height / 2 - 90))
-            elif(fading == WRONG_ANS):
-                wrongImage.set_alpha(round(255 - 255 * (cntFading / float(TIME_FADING * FPS))))
-                screen.blit(wrongImage, (width / 2 + 30, height / 2 - 90))
-                correctAns = wrongAnsFont.render("Correct: " + current_image[1], 1, (0, 0, 0))
-                screen.blit(correctAns, (width - 80, height - 20))
-        else:
-            screen.fill(BACKGROUND_COLOR)
-            labelEst = myFontFinal.render("Completed!", 1, colorFinal)
-            screen.blit(labelEst, (width / 2 - 92, height / 2 - 80))
-            correctImage.set_alpha(255)
-            wrongImage.set_alpha(255)
-            screen.blit(correctImage, (40, 70))
-            screen.blit(wrongImage, (39, 135))
-            numCorrect = myFontFinal2.render(str(cntAcertos), 1, colorFinal_Correct)
-            numWrong = myFontFinal2.render(str(cntTotal - cntAcertos), 1, colorFinal_Wrong)
-            screen.blit(numCorrect, (130, 85))
-            screen.blit(numWrong, (129, 155))
-    else:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-            for idx, button in enumerate(buttons):
-                ret = button.eventHandler(event)
-                if(ret == 1):
-                    if(idx <= 2):
-                        switchers[idx].switch(not switchers[idx].getState())
-                    else:
-                        if(idx == 3):
-                            running = False
-                        else:
-                            inMenu = False
-                            all_images = loadImages(switchers[0].on, switchers[1].on, switchers[2].on)
-                            if(len(all_images) == 0):
-                                finished = True
-                            else:
-                                cntTotal = len(all_images)
-                                current_image = getRandomImage(all_images)
-                                image = pygame.image.load(current_image[0])
-        screen.fill(BACKGROUND_COLOR)
-        labelEst = myFontFinal.render("Menu '-'", 1, colorFinal)
-        screen.blit(labelEst, (width / 2 - 50, height / 2 - 90))
+			if(fading == CORRECT_ANS):
+				correctImage.set_alpha(round(255 - 255 * (cntFading / float(TIME_FADING * FPS))))
+				screen.blit(correctImage, (width / 2 + 30, height / 2 - 90))
+			elif(fading == WRONG_ANS):
+				wrongImage.set_alpha(round(255 - 255 * (cntFading / float(TIME_FADING * FPS))))
+				screen.blit(wrongImage, (width / 2 + 30, height / 2 - 90))
+				correctAns = wrongAnsFont.render("Correct: " + current_image[1], 1, (0, 0, 0))
+				screen.blit(correctAns, (width - 80, height - 20))
+		else:
+			screen.fill(BACKGROUND_COLOR)
+			labelEst = myFontFinal.render("Completed!", 1, colorFinal)
+			screen.blit(labelEst, (width / 2 - 92, height / 2 - 80))
+			correctImage.set_alpha(255)
+			wrongImage.set_alpha(255)
+			screen.blit(correctImage, (40, 70))
+			screen.blit(wrongImage, (39, 135))
+			numCorrect = myFontFinal2.render(str(cntAcertos), 1, colorFinal_Correct)
+			numWrong = myFontFinal2.render(str(cntTotal - cntAcertos), 1, colorFinal_Wrong)
+			screen.blit(numCorrect, (130, 85))
+			screen.blit(numWrong, (129, 155))
+	else:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				running = False
+			elif event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_ESCAPE:
+					running = False
+			for idx, button in enumerate(buttons):
+				ret = button.eventHandler(event)
+				if(ret == 1):
+					if(idx <= 2):
+						switchers[idx].switch(not switchers[idx].getState())
+					else:
+						if(idx == 3):
+							running = False
+						else:
+							inMenu = False
+							all_images = loadImages(switchers[0].on, switchers[1].on, switchers[2].on)
+							if(len(all_images) == 0):
+								finished = True
+							else:
+								cntTotal = len(all_images)
+								current_image = getRandomImage(all_images)
+								image = pygame.image.load(current_image[0])
+		screen.fill(BACKGROUND_COLOR)
+		labelEst = myFontFinal.render("Menu '-'", 1, colorFinal)
+		screen.blit(labelEst, (width / 2 - 50, height / 2 - 90))
 
-        for button in buttons:
-            button.draw(screen)
+		for button in buttons:
+			button.draw(screen)
 
-        for switch in switchers:
-            switch.draw(screen)
+		for switch in switchers:
+			switch.draw(screen)
 
-    pygame.display.flip()
-    clock.tick(FPS)
+	pygame.display.flip()
+	clock.tick(FPS)
